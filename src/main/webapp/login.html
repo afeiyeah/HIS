@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>东软云医院登录页面</title>
+		<link rel="stylesheet" href="css/login.css" />
+		<script src="js/jquery-3.2.1.min.js"></script>
+		<script type="text/javascript" src="js/login.js">
+		</script>
+	</head>
+	<body>
+		<div id="div1">
+			<div id="div1_1">
+				东软云医院管理系统
+			</div>
+			<form id="form1">
+				<div class="div1_data">
+				<div class="data_name">
+					用户名:
+				</div>
+				<div>
+					<input type="text" class="form_control" name="uname"/>
+				</div>
+			</div>
+			<div class="div1_data">
+				<div class="data_name">
+					密&nbsp;&nbsp;码：
+				</div>
+				<div>
+					<input type="password" name="upwd" class="form_control"/>
+				</div>
+			</div>
+			<div class="div1_data">
+				<div class="data_name">
+					角&nbsp;&nbsp;色：
+				</div>
+				<div>
+					<select id="role" name="utype">
+						<option value="-1">----请选择----</option>
+						<option value="1">挂号员</option>
+						<option value="2">医生</option>
+					</select>
+				</div>
+			</div>
+			<div id="div1_2">
+				<button type="button" id="loginBtn">登&nbsp;&nbsp;录</button>
+			</div>
+			</form>
+			
+		</div>
+		
+	</body>
+</html>

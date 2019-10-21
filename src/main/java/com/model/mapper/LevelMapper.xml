@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace属性：指定当前SQL映射文件对应接口的全类名 -->
+<mapper namespace="com.model.mapper.LevelMapper">
+	
+	<!-- 查询level数据 -->
+	<select id="getLevelData" resultType="Level">
+		select * from register_level_dic;
+	</select>
+	
+</mapper>

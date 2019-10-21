@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace属性：指定当前SQL映射文件对应接口的全类名 -->
+<mapper namespace="com.model.mapper.DoctorMapper">
+	
+	<!-- 查询doctor数据 -->
+	<select id="getDoctorByDept" parameterType="int" resultType="Doctor">
+		select * from doctor
+		where department_id=#{department_id};
+	</select>
+	
+</mapper>

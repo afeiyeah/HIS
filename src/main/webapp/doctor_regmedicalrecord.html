@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>医生工作站_看诊</title>
+		<link rel="stylesheet" type="text/css" href="css/doctor_regmedicalrecord.css"/>
+		<script src="js/jquery-3.2.1.min.js"></script>
+		<script type="text/javascript" src="js/doctor_regmedicalrecord.js">
+		</script>
+	</head>
+	<body>
+		<div id="div1"> 
+			<div class="div1_nav" id="div1_1">
+				病历
+			</div>
+			<div class="div1_nav" id="div1_2">
+				检查申请
+			</div>
+			<div class="div1_nav" id="div1_3">
+				检验申请
+			</div>
+			<div class="div1_nav" id="div1_4">
+				确诊
+			</div>
+			<div class="div1_logout">
+				退出
+			</div>
+		</div>
+		<div id="div3" class="data">
+			<div>
+				病历号：<input type="text" id="patient_ID"/>
+			</div>
+			<div>
+				姓名：<input type="text" id="patient_name"/>
+			</div>
+			<div>
+				性别：<input type="radio" name="gender" value="1" id="gender1"/>男
+				<input type="radio" name="gender" value="0" id="gender0"/>女
+			</div>
+			<div>
+				挂号日期：<input type="text" id="register_date"/>
+			</div>
+		</div>
+		<div id="div4" class="data">
+			<div>
+				身份证号：<input type="text" id="patient_identity"/>
+			</div>
+			<div>
+				挂号级别：<input type="text" id="register_level_id"/>
+			</div>
+			<div>
+				是否已诊:<span id="visited_type"></span>
+			</div>
+			<div>
+				状态：<span id="status"></span>
+			</div>
+		</div>
+		<div id="div5" class="data">
+			<div>
+				挂号科室：<input type="text" id="department_id"/>
+			</div>
+			<div>
+				看诊医生：<input type="text" id="doctor_id"/>
+			</div>
+			<div></div>
+			
+		</div>
+		<div id="div2">
+			病历信息
+		</div>
+		<form id="form1">
+			<div class="form_control">
+				<div class="form_data_name">
+					主诉:
+				</div>
+				<div>
+					<textarea class="form_data" name="complaint"></textarea>
+				</div>
+			</div>
+			<div class="form_control">
+				<div class="form_data_name">
+					主要症状：
+				</div>
+				<div>
+					<textarea class="form_data" name="present_illness"></textarea>
+				</div>
+			</div>
+			<div class="form_control">
+				<div class="form_data_name">
+					疾病史：
+				</div>
+				<div>
+					<textarea class="form_data" name="past_illness"></textarea>
+				</div>
+			</div>
+			<div class="form_control">
+				<div class="form_data_name">
+					初步诊断：
+				</div>
+				<div>
+					<textarea class="form_data" name="primary_diagnosis"></textarea>
+				</div>
+			</div>
+		</form>
+		<div id="div6">
+			<button type="button" id="regMR">生成病历</button>
+			<button type="button" id="goBack">返回</button>
+		</div>
+	</body>
+</html>

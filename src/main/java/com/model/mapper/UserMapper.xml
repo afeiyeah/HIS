@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace属性：指定当前SQL映射文件对应接口的全类名 -->
+<mapper namespace="com.model.mapper.UserMapper">
+	
+	<!-- 根据uid查询用户数据 -->
+	<select id="selectUser" parameterType="User" resultType="User">
+		select * from user 
+		where uname=#{uname} and upwd=#{upwd} and utype=#{utype};
+	</select>
+	
+</mapper>

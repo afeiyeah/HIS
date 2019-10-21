@@ -1,0 +1,56 @@
+$(function(){
+	var pid=location.href.substr(location.href.indexOf('=')+1);
+	$.ajax({
+		type:"post",
+		url:"getPatientByNo/"+pid,
+		data:{},
+		dataType:"json",
+		success:function(msg){
+			if(msg.patient_ID==0){
+				alert("系统中不存在该患者");
+			}else{
+				alert(msg.visited_type);
+				alert(msg.department.department_name);
+				alert(msg.doctor.doctor_name);
+				$("#patient_ID").val(msg.patient_ID);
+				$("#patient_name").val(msg.patient_name);
+				if(msg.gender=="男"){
+					$("#gender1")[0].checked=true;
+				}else{
+					$("#gender0")[0].checked=true;
+				}
+				$("#register_date").val(msg.register_date);
+				$("#patient_identity").val(msg.patient_identity);
+				$("#register_level_id").val(msg.level.register_level_name);
+				if(msg.visited_type==1){
+					$("#visited_type").html("未诊");
+					
+				}else{
+					$("#visited_type").html("已诊");
+					
+				}
+				if(msg.visited_type==3){
+					$("#status").html("退号");
+				}else{
+					$("#status").html("正常");
+				}
+				$("#department_id").val(msg.department.department_name);
+				$("#doctor_id").val(msg.doctor.doctor_name);
+			}
+			
+		}
+	});
+	//点击生成病历按钮，存储病历信息
+	$("#regMR").click(function(){
+		$.ajax({
+			type:"post",
+			url:"regMedicalRecord/"+pid,
+			data:$("#form1").serialize(),
+			dataType:"json",
+			success:function(msg){
+				console.log(msg.result);
+				location.href="doctor_medicalrecord.html";
+			}
+		});
+	})
+})

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace属性：指定当前SQL映射文件对应接口的全类名 -->
+<mapper namespace="com.model.mapper.PatientMapper">
+	
+	<!-- 根据查询最大病历号 -->
+	<select id="getPatientNo" resultType="Patient">
+		select ifnull(max(patient_ID),0)+1 patient_ID from patient
+	</select>
+	<!-- 查询7天内的病历信息 -->
+	<select id="getPatientData" parameterType="map" resultMap="presult">
+		select p.*,l.register_level_name,d.department_name, doc.doctor_name
+		from patient p,register_level_dic l,department_dic d,doctor doc
+		where p.register_level_id=l.register_level_id 
+		and p.department_id=d.department_id
+		and p.doctor_id=doc.doctor_id
+		and register_date>=#{k_date}
+		order by p.patient_ID
+		limit #{k_index},#{k_pageSize};
+	</select>
+	<resultMap type="Patient" id="presult">
+		<result property="patient_ID" column="patient_ID"/>
+		<result property="patient_name" column="patient_name"/>
+		<result property="patient_gender" column="patient_gender"/>
+		<result property="patient_birth" column="patient_birth"/>
+		<result property="patient_identity" column="patient_identity"/>
+		<result property="casebook" column="casebook"/>
+		<result property="visited_type" column="visited_type"/>
+		<result property="register_date" column="register_date"/>
+		
+		<association property="level" column="register_level_id" javaType="level" resultMap="levelResult"></association>
+		<association property="department" column="department_id" javaType="department" resultMap="departmentResult"></association>
+		<association property="doctor" column="doctor_id" javaType="doctor" resultMap="doctorResult"></association>
+		
+	</resultMap>
+	
+	<resultMap type="level" id="levelResult">
+		<result property="register_level_name" column="register_level_name"/>
+	</resultMap>
+	<resultMap type="department" id="departmentResult">
+		<result property="department_name" column="department_name"/>
+	</resultMap>
+	<resultMap type="doctor" id="doctorResult">
+		<result property="doctor_name" column="doctor_name"/>
+	</resultMap>
+	<!-- 存储用户信息 -->
+	<insert id="savePatient" parameterType="Patient">
+		insert into patient values
+		(#{patient_ID},#{patient_name},#{patient_gender},#{patient_age},#{patient_birth},#{patient_identity},#{patient_address},#{register_level_id},#{department_id},#{doctor_id},#{casebook},#{register_cost},#{register_date},#{visited_type},#{patient_status},#{patient_operator},#{operate_date})
+	</insert>
+	<!-- 查询一个患者信息 -->
+	<select id="getPatientByNo" parameterType="int" resultMap="presult">
+		select p.*,l.register_level_name,d.department_name, doc.doctor_name
+		from patient p,register_level_dic l,department_dic d,doctor doc
+		where p.register_level_id=l.register_level_id 
+		and p.department_id=d.department_id
+		and p.doctor_id=doc.doctor_id
+		and p.patient_ID=#{patient_ID}
+	</select>
+	<!-- 更新患者状态 -->
+	<update id="updatePatientStatus" parameterType="map">
+		update patient
+		set visited_type=#{k_visited_type},patient_operator=#{k_patient_operator}, operate_date=#{k_operate_date}
+		where patient_ID=#{k_patient_ID};
+	</update>
+	<!-- 查找医生当天的患者 -->
+	<select id="getPatientDataByDoc" parameterType="map" resultMap="presult">
+		select p.*,l.register_level_name,d.department_name, doc.doctor_name
+		from patient p,register_level_dic l,department_dic d,doctor doc
+		where p.register_level_id=l.register_level_id 
+		and p.department_id=d.department_id
+		and p.doctor_id=doc.doctor_id
+		and doc.doctor_name=#{k_doctor_name}
+		and p.operate_date=#{k_operate_date}
+		order by p.patient_id
+	</select>
+	<!-- 查询一个患者信息(有check和examine一对多关联关系) -->
+	<select id="selectPatientByPno" parameterType="int" resultMap="patientresult">
+		select p.*,l.register_level_name,d.department_name, doc.doctor_name,
+		cr.record_id crecord_id,c.checkup_name,c.checkup_price,cr.checkup_amount,cr.payment_status cpayment_status,
+		er.record_id erecord_id,e.examine_name,e.examine_price,er.examine_amount,er.payment_status epayment_status
+		from patient p
+		left outer join checkup_record cr on (p.patient_ID=cr.patient_id) 
+		left outer join examine_record er on (p.patient_ID=er.patient_id)
+		left outer join checkup c on (c.checkup_id=cr.checkup_id)
+		left outer join examine e on (e.examine_id=er.examine_id),
+		register_level_dic l,department_dic d,doctor doc
+		where p.register_level_id=l.register_level_id 
+		and p.department_id=d.department_id
+		and p.doctor_id=doc.doctor_id
+		and p.patient_ID=#{pid}
+	</select>
+	<resultMap type="Patient" id="patientresult">
+		<result property="patient_ID" column="patient_ID"/>
+		<result property="patient_name" column="patient_name"/>
+		<result property="patient_gender" column="patient_gender"/>
+		<result property="patient_birth" column="patient_birth"/>
+		<result property="patient_identity" column="patient_identity"/>
+		<result property="casebook" column="casebook"/>
+		<result property="visited_type" column="visited_type"/>
+		<result property="register_date" column="register_date"/>
+		<association property="level" column="register_level_id" javaType="level" resultMap="levelResult"></association>
+		<association property="department" column="department_id" javaType="department" resultMap="departmentResult"></association>
+		<association property="doctor" column="doctor_id" javaType="doctor" resultMap="doctorResult"></association>
+		<collection property="crlist" ofType="CheckRecord">
+			<result property="record_id" column="crecord_id"/>
+			<result property="checkup_amount" column="checkup_amount"/>
+			<result property="payment_status" column="cpayment_status"/>
+			<association property="check" javaType="Check" resultMap="checkResult"></association>
+		</collection>
+		<collection property="erlist" ofType="ExamineRecord">
+			<result property="record_id" column="erecord_id"/>
+			<result property="examine_amount" column="examine_amount"/>
+			<result property="payment_status" column="epayment_status"/>
+			<association property="examine" javaType="Examine" resultMap="examineResult"></association>
+		</collection>
+		
+	</resultMap>
+	<resultMap type="check" id="checkResult">
+		<result property="checkup_name" column="checkup_name"/>
+		<result property="checkup_price" column="checkup_price"/>
+	</resultMap>
+	<resultMap type="Examine" id="examineResult">
+		<result property="examine_name" column="examine_name"/>
+		<result property="examine_price" column="examine_price"/>
+	</resultMap>
+	
+	<select id="getPatientMRByNo" parameterType="int" resultMap="medicalResult">
+		select p.*,l.register_level_name,d.department_name, doc.doctor_name,m.*
+		from patient p,register_level_dic l,department_dic d,doctor doc,medical m
+		where p.register_level_id=l.register_level_id 
+		and p.department_id=d.department_id
+		and p.doctor_id=doc.doctor_id
+		and p.patient_ID=m.patient_id
+		and p.patient_ID=#{patient_ID}
+	</select>
+	<resultMap type="Patient" id="medicalResult">
+		<result property="patient_ID" column="patient_ID"/>
+		<result property="patient_name" column="patient_name"/>
+		<result property="patient_gender" column="patient_gender"/>
+		<result property="patient_birth" column="patient_birth"/>
+		<result property="patient_identity" column="patient_identity"/>
+		<result property="casebook" column="casebook"/>
+		<result property="visited_type" column="visited_type"/>
+		<result property="register_date" column="register_date"/>
+		
+		<association property="level" column="register_level_id" javaType="level" resultMap="levelResult"></association>
+		<association property="department" column="department_id" javaType="department" resultMap="departmentResult"></association>
+		<association property="doctor" column="doctor_id" javaType="doctor" resultMap="doctorResult"></association>
+		<association property="m" column="medical_record" javaType="medical" resultMap="mResult"></association>
+	</resultMap>
+	
+	
+	<resultMap type="medical" id="mResult">
+		<result property="medical_record" column="medical_record"/>
+		<result property="complaint" column="complaint"/>
+		<result property="present_illness" column="present_illness"/>
+		<result property="past_illness" column="past_illness"/>
+		<result property="primary_diagnosis" column="primary_diagnosis"/>
+	</resultMap>
+	
+</mapper>

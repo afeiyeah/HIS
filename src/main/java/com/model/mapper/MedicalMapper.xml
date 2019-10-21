@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace属性：指定当前SQL映射文件对应接口的全类名 -->
+<mapper namespace="com.model.mapper.MedicalMapper">
+	
+	<!-- 存储数据 -->
+	<insert id="saveMedicalRecord" parameterType="Medical">
+		insert into medical(patient_ID,complaint,present_illness,past_illness,primary_diagnosis,medical_status,medical_operator,operate_date)
+		values(#{patient_ID},#{complaint},#{present_illness},#{past_illness},#{primary_diagnosis},#{medical_status},#{medical_operator},#{operate_date});
+	</insert>
+	
+	<!-- 更新数据 -->
+	<update id="updateMedicalRecord" parameterType="Medical">
+		update medical
+		set checkup_result=#{checkup_result},final_diagnosis=#{final_diagnosis},medical_operator=#{medical_operator},operate_date=#{operate_date}
+		where medical_record=#{medical_record}
+	</update>
+	
+</mapper>

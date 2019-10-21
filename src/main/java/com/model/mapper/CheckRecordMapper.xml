@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace属性：指定当前SQL映射文件对应接口的全类名 -->
+<mapper namespace="com.model.mapper.CheckRecordMapper">
+	
+	<!--保存检查数据 -->
+	<insert id="saveCheckItemRecord" parameterType="CheckRecord">
+		insert into checkup_record(patient_id,checkup_id,checkup_amount,payment_status) 
+		values(#{patient_id},#{checkup_id},#{checkup_amount},#{payment_status})
+	</insert>
+	<update id="updateCheckItems">
+		update checkup_record
+		set payment_status=1
+		where record_id in
+		<foreach collection="array" item="cid" open="(" close=")" separator=",">
+			#{cid}
+		</foreach>
+	</update>
+	
+</mapper>
